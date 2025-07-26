@@ -32,34 +32,60 @@ class Todo:
         
         return NotImplemented
 
-def test_todo():
-    todo1 = Todo('Buy milk')
-    todo2 = Todo('Clean room')
-    todo3 = Todo('Go to gym')
-    todo4 = Todo('Clean room')
+class TodoList:
 
-    print(todo1)                  # [ ] Buy milk
-    print(todo2)                  # [ ] Clean room
-    print(todo3)                  # [ ] Go to gym
-    print(todo4)                  # [ ] Clean room
+    def __init__(self, title):
+        self._title = title
+        self._todos = []
 
-    print(todo2 == todo4)         # True
-    print(todo1 == todo2)         # False
-    print(todo4.done)             # False
+    @property
+    def title(self):
+        return self._title
+    
+    def add(self, todo):
+        if not isinstance(todo, Todo):
+            raise TypeError("Can only add Todo objects")
+        
+        self._todos.append(todo)
 
-    todo1.done = True
-    todo4.done = True
-    print(todo4.done)             # True
+    def __str__(self):
+        lines = [f"---- {self.title} ----"]
+        lines += [str(todo) for todo in self._todos]
+        return "\n".join(lines)
+    
+    def __len__(self):
+        return len(self._todos)
+    
+    def first(self):
+        return self._todos[0]
+    
+    def last(self):
+        return self._todos[-1]
+    
+    def to_list(self):
+        return self._todos.copy()
+    
+    def todo_at(self, idx):
+        return self._todos[idx]
+    
+    def mark_done_at(self, idx):
+        self.todo_at(idx).done = True
 
-    print(todo1)                  # [X] Buy milk
-    print(todo2)                  # [ ] Clean room
-    print(todo3)                  # [ ] Go to gym
-    print(todo4)                  # [X] Clean room
+    def mark_undone_at(self, idx):
+        self.todo_at(idx).done = False
 
-    print(todo2 == todo4)         # False
+    def mark_all_done(self):
+        for todo in self._todos:
+            todo.done = True
 
-    todo4.done = False
-    print(todo4.done)             # False
-    print(todo4)                  # [ ] Clean room
+    def mark_all_undone(self):
+        for todo in self._todos:
+            todo.done = False
 
-test_todo()
+    def all_done(self):
+        return all(todo.done for todo in self._todos)
+    
+    def remove_at(self, idx):
+        self._todos.pop(idx)
+
+
